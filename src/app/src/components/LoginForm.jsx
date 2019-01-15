@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { arrayOf, bool, func, string } from 'prop-types';
+import { arrayOf, bool, func, shape, string } from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
@@ -14,15 +14,30 @@ import {
     updateLoginFormEmailAddress,
     updateLoginFormPassword,
     submitLoginForm,
-    resetAuthState,
+    resetAuthFormState,
 } from '../actions/auth';
 
 import { getValueFromEvent } from '../util/util';
+
+import { userPropType } from '../util/propTypes';
+
+import { authRegisterFormRoute } from '../util/constants';
 
 const LOGIN_EMAIL = 'LOGIN_EMAIL';
 const LOGIN_PASSWORD = 'LOGIN_PASSWORD';
 
 class LoginForm extends Component {
+    componentDidUpdate() {
+        const {
+            user,
+            history,
+        } = this.props;
+
+        return user
+            ? history.push(`/profile/${user.id}`)
+            : null;
+    }
+
     componentWillUnmount() {
         return this.props.clearForm();
     }
@@ -36,7 +51,12 @@ class LoginForm extends Component {
             updateEmail,
             updatePassword,
             submitForm,
+            sessionFetching,
         } = this.props;
+
+        if (sessionFetching) {
+            return null;
+        }
 
         const errorMessages = error && error.length
             ? (
@@ -49,7 +69,6 @@ class LoginForm extends Component {
                         width: '100%',
                     }}
                 >
-                    <p>{this.getError()}</p>
                     <ul>
                         {
                             error.map(err => (
@@ -71,8 +90,8 @@ class LoginForm extends Component {
                         <br />
                         Don&apos;t have an account?{' '}
                         <Link
-                            to="/auth/register"
-                            href="/auth/register"
+                            to={authRegisterFormRoute}
+                            href={authRegisterFormRoute}
                             className="link-underline"
                         >
                             Register
@@ -122,6 +141,7 @@ class LoginForm extends Component {
 
 LoginForm.defaultProps = {
     error: null,
+    user: null,
 };
 
 LoginForm.propTypes = {
@@ -133,6 +153,11 @@ LoginForm.propTypes = {
     updatePassword: func.isRequired,
     submitForm: func.isRequired,
     clearForm: func.isRequired,
+    user: userPropType,
+    history: shape({
+        push: func.isRequired,
+    }).isRequired,
+    sessionFetching: bool.isRequired,
 };
 
 function mapStateToProps({
@@ -143,6 +168,12 @@ function mapStateToProps({
                 password,
             },
         },
+        user: {
+            user,
+        },
+        session: {
+            fetching: sessionFetching,
+        },
         fetching,
         error,
     },
@@ -152,6 +183,8 @@ function mapStateToProps({
         password,
         fetching,
         error,
+        user,
+        sessionFetching,
     };
 }
 
@@ -160,7 +193,7 @@ function mapDispatchToProps(dispatch) {
         updateEmail: e => dispatch(updateLoginFormEmailAddress(getValueFromEvent(e))),
         updatePassword: e => dispatch(updateLoginFormPassword(getValueFromEvent(e))),
         submitForm: () => dispatch(submitLoginForm()),
-        clearForm: () => dispatch(resetAuthState()),
+        clearForm: () => dispatch(resetAuthFormState()),
     };
 }
 

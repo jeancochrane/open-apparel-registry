@@ -1,7 +1,27 @@
+from django.core.exceptions import PermissionDenied
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_auth.views import LoginView, LogoutView
 
+from api.serializers import UserSerializer
+
+
+class LoginToOARClient(LoginView):
+    def post(self, request, *args, **kwargs):
+        return super(LoginToOARClient, self).post(request,
+                                                  *args,
+                                                  **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            raise PermissionDenied
+
+        return Response(UserSerializer(request.user).data)
+
+
+class LogoutOfOARClient(LogoutView):
+    pass
 
 # TODO: Remove the following URLS once Django versions have been
 # implemented. These are here as imitations of the URLS available via

@@ -92,3 +92,7 @@ account profile`,
         required: true,
     }),
 ]);
+
+export const authLoginFormRoute = '/auth/login';
+export const authRegisterFormRoute = '/auth/register';
+export const contributeRoute = '/contribute';

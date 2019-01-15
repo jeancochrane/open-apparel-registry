@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { arrayOf, bool, func, string } from 'prop-types';
+import { arrayOf, bool, func, shape, string } from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
@@ -13,18 +13,20 @@ import RegisterFormField from './RegisterFormField';
 import {
     updateSignUpFormInput,
     submitSignUpForm,
-    resetAuthState,
+    resetAuthFormState,
 } from '../actions/auth';
 
 import {
     OTHER,
     registrationFieldsEnum,
     registrationFormFields,
+    authLoginFormRoute,
 } from '../util/constants';
 
 import {
     registrationFormValuesPropType,
     registrationFormInputHandlersPropType,
+    userPropType,
 } from '../util/propTypes';
 
 import {
@@ -33,6 +35,17 @@ import {
 } from '../util/util';
 
 class RegisterForm extends Component {
+    componentDidUpdate() {
+        const {
+            user,
+            history,
+        } = this.props;
+
+        return user
+            ? history.push(`/profile/${user.id}`)
+            : null;
+    }
+
     componentWillUnmount() {
         return this.props.clearForm();
     }
@@ -44,7 +57,12 @@ class RegisterForm extends Component {
             form,
             inputUpdates,
             submitForm,
+            sessionFetching,
         } = this.props;
+
+        if (sessionFetching) {
+            return null;
+        }
 
         const errorMessages = error && error.length
             ? (
@@ -92,7 +110,11 @@ class RegisterForm extends Component {
             <AppGrid title="Register">
                 <p>
                     Already have an account?{' '}
-                    <Link to="/auth/login" href="/auth/login" className="link-underline">
+                    <Link
+                        to={authLoginFormRoute}
+                        href={authLoginFormRoute}
+                        className="link-underline"
+                    >
                         Log In
                     </Link>
                     .
@@ -134,6 +156,7 @@ class RegisterForm extends Component {
 
 RegisterForm.defaultProps = {
     error: null,
+    user: null,
 };
 
 RegisterForm.propTypes = {
@@ -143,14 +166,25 @@ RegisterForm.propTypes = {
     form: registrationFormValuesPropType.isRequired,
     inputUpdates: registrationFormInputHandlersPropType.isRequired,
     submitForm: func.isRequired,
+    sessionFetching: bool.isRequired,
+    user: userPropType,
+    history: shape({
+        push: func.isRequired,
+    }).isRequired,
 };
 
 function mapStateToProps({
     auth: {
         fetching,
         error,
+        session: {
+            fetching: sessionFetching,
+        },
         signup: {
             form,
+        },
+        user: {
+            user,
         },
     },
 }) {
@@ -158,6 +192,8 @@ function mapStateToProps({
         fetching,
         error,
         form,
+        sessionFetching,
+        user,
     };
 }
 
@@ -216,7 +252,7 @@ function mapDispatchToProps(dispatch) {
                 })),
         },
         submitForm: () => dispatch(submitSignUpForm()),
-        clearForm: () => dispatch(resetAuthState()),
+        clearForm: () => dispatch(resetAuthFormState()),
     };
 }
 

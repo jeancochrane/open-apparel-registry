@@ -29,6 +29,10 @@ urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls')),
     url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
+    url(r'^user-login/', views.LoginToOARClient.as_view(),
+        name='login_to_oar_client'),
+    url(r'^user-logout/', views.LogoutOfOARClient.as_view(),
+        name='logout_of_oar_client'),
     # TODO: Remove the following URLs once the Django versions have been
     # implemented. These are here as imitations of the URLs available via
     # the legacy Restify API:

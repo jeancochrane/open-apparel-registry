@@ -1,6 +1,12 @@
 import { createAction } from 'redux-act';
 
-import { logErrorAndDispatchFailure } from '../util/util';
+import csrfRequest from '../util/csrfRequest';
+
+import {
+    logErrorAndDispatchFailure,
+    makeUserLoginURL,
+    makeUserLogoutURL,
+} from '../util/util';
 
 export const startSubmitSignUpForm = createAction('START_SUBMIT_SIGN_UP_FORM');
 export const failSubmitSignUpForm = createAction('FAIL_SUBMIT_SIGN_UP_FORM');
@@ -11,6 +17,10 @@ export const updateSignUpFormInput = createAction('UPDATE_SIGN_UP_FORM_INPUT');
 export const startSubmitLoginForm = createAction('START_SUBMIT_LOGIN_FORM');
 export const failSubmitLoginForm = createAction('FAIL_SUBMIT_LOGIN_FORM');
 export const completeSubmitLoginForm = createAction('COMPLETE_SUBMIT_LOGIN_FORM');
+
+export const startSessionLogin = createAction('START_SESSION_LOGIN');
+export const failSessionLogin = createAction('FAIL_SESSION_LOGIN');
+export const completeSessionLogin = createAction('COMPLETE_SESSION_LOGIN');
 
 export const updateLoginFormEmailAddress = createAction('UPDATE_LOGIN_FORM_EMAIL_ADDRESS');
 export const updateLoginFormPassword = createAction('UPDATE_LOGIN_FORM_PASSWORD');
@@ -28,6 +38,7 @@ export const closeForgotPasswordDialog = createAction('CLOSE_FORGOT_PASSWORD_DIA
 export const updateForgotPasswordEmailAddress =
     createAction('UPDATE_FORGOT_PASSWORD_EMAIL_ADDRESS');
 
+export const resetAuthFormState = createAction('RESET_AUTH_FORM_STATE');
 export const resetAuthState = createAction('RESET_AUTH_STATE');
 
 export function submitSignUpForm() {
@@ -46,16 +57,50 @@ export function submitSignUpForm() {
 }
 
 export function submitLoginForm() {
-    return (dispatch) => {
+    return (dispatch, getState) => {
         dispatch(startSubmitLoginForm());
 
-        return Promise
-            .resolve(true)
-            .then(() => dispatch(completeSubmitLoginForm()))
+        const {
+            auth: {
+                login: {
+                    form: {
+                        email,
+                        password,
+                    },
+                },
+            },
+        } = getState();
+
+        if (!email || !password) {
+            return dispatch(logErrorAndDispatchFailure(
+                null,
+                'Email and password are required',
+                failSubmitLoginForm,
+            ));
+        }
+
+        return csrfRequest
+            .post(makeUserLoginURL(), { username: email, password })
+            .then(({ data }) => dispatch(completeSubmitLoginForm(data)))
             .catch(e => dispatch(logErrorAndDispatchFailure(
                 e,
                 'An error prevented logging in',
                 failSubmitLoginForm,
+            )));
+    };
+}
+
+export function sessionLogin() {
+    return (dispatch) => {
+        dispatch(startSessionLogin());
+
+        return csrfRequest
+            .get(makeUserLoginURL())
+            .then(({ data }) => dispatch(completeSessionLogin(data)))
+            .catch(e => dispatch(logErrorAndDispatchFailure(
+                e,
+                'User was not signed in',
+                failSessionLogin,
             )));
     };
 }
@@ -79,9 +124,9 @@ export function submitLogOut() {
     return (dispatch) => {
         dispatch(startSubmitLogOut());
 
-        return Promise
-            .resolve(true)
-            .then(() => dispatch(completeSubmitLogOut()))
+        return csrfRequest
+            .post(makeUserLogoutURL())
+            .then(({ data }) => dispatch(completeSubmitLogOut(data)))
             .catch(e => dispatch(logErrorAndDispatchFailure(
                 e,
                 'An error prevented logging out',

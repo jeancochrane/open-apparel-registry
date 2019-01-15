@@ -14,6 +14,9 @@ export function DownloadCSV(data, fileName) {
     }
 }
 
+export const makeUserLoginURL = () => `${process.env.REACT_APP_API_URL}/user-login/`;
+export const makeUserLogoutURL = () => `${process.env.REACT_APP_API_URL}/user-logout/`;
+
 export const makeGetListsURL = uid =>
     `${process.env.REACT_APP_API_URL}/getLists/${uid}/?key=${process.env.REACT_APP_API_KEY}`;
 
@@ -59,7 +62,19 @@ export function logErrorAndDispatchFailure(error, defaultMessage, failureAction)
             return dispatch(failureAction(['Not found']));
         }
 
-        const errorMessages = response.data || [defaultMessage];
+        const errorMessages = (() => {
+            if (!response || !response.data) {
+                return [defaultMessage];
+            }
+
+            // For signin-error
+            if (response.data.non_field_errors) {
+                return response.data.non_field_errors;
+            }
+
+            return response.data;
+        })();
+
         window.console.warn(errorMessages);
         return dispatch(failureAction(errorMessages));
     };
