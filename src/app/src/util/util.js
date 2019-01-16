@@ -1,4 +1,7 @@
 import get from 'lodash/get';
+import isArray from 'lodash/isArray';
+
+import { registrationFormFields } from './constants';
 
 export function DownloadCSV(data, fileName) {
     const csvData = new Blob([data], { type: 'text/csv;charset=utf-8;' });
@@ -15,7 +18,8 @@ export function DownloadCSV(data, fileName) {
 }
 
 export const makeUserLoginURL = () => '/user-login/';
-export const makeUserLogoutURL = () => `/user-logout/`;
+export const makeUserLogoutURL = () => '/user-logout/';
+export const makeUserSignupURL = () => '/user-signup/';
 
 export const makeGetListsURL = uid =>
     `/getLists/${uid}/?key=${process.env.REACT_APP_API_KEY}`;
@@ -35,9 +39,9 @@ export const makeUploadTempFacilityURL = uid =>
 export const makeGenerateAPIKeyURL = uid =>
     `/generateKey/${uid}/?key=${process.env.REACT_APP_API_KEY}`;
 
-export const makeAllSourceURL = () => `/allsource/`;
-export const makeAllCountryURL = () => `/allcountry/`;
-export const makeTotalFacilityURL = () => `/totalFactories/`;
+export const makeAllSourceURL = () => '/allsource/';
+export const makeAllCountryURL = () => '/allcountry/';
+export const makeTotalFacilityURL = () => '/totalFactories/';
 
 export const makeSearchFacilityByNameAndCountryURL = (name, country, contributor = null) => {
     const baseURL = `/searchFactoryNameCountry/?name=${name}&country=${country}&contributor=`;
@@ -71,10 +75,13 @@ export function logErrorAndDispatchFailure(error, defaultMessage, failureAction)
                 return response.data.non_field_errors;
             }
 
-            return response.data;
+            if (isArray(response.data)) {
+                return response.data;
+            }
+
+            return [defaultMessage];
         })();
 
-        window.console.warn(errorMessages);
         return dispatch(failureAction(errorMessages));
     };
 }
@@ -82,3 +89,21 @@ export function logErrorAndDispatchFailure(error, defaultMessage, failureAction)
 export const getValueFromEvent = ({ target: { value } }) => value;
 
 export const getCheckedFromEvent = ({ target: { checked } }) => checked;
+
+export const createSignupErrorMessages = form => registrationFormFields
+    .reduce((acc, { id, label, required }) => {
+        if (!required) {
+            return acc;
+        }
+
+        if (form[id]) {
+            return acc;
+        }
+
+        return acc.concat(`Missing required field ${label}`);
+    }, []);
+
+export const createSignupRequestData = form => registrationFormFields
+    .reduce((acc, { id, modelFieldName }) => Object.assign({}, acc, {
+        [modelFieldName]: form[id],
+    }), {});

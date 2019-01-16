@@ -31,7 +31,6 @@ import { registrationFieldsEnum } from '../util/constants';
 
 const initialState = Object.freeze({
     signup: Object.freeze({
-        data: null,
         form: Object.freeze({
             [registrationFieldsEnum.email]: '',
             [registrationFieldsEnum.name]: '',
@@ -52,7 +51,6 @@ const initialState = Object.freeze({
         }),
     }),
     forgotPassword: Object.freeze({
-        data: null,
         form: Object.freeze({
             email: '',
         }),
@@ -126,8 +124,10 @@ export default createReducer({
         fetching: { $set: false },
         error: { $set: null },
         signup: {
-            data: { $set: payload },
             form: { $set: initialState.signup.form },
+        },
+        user: {
+            user: { $set: payload },
         },
     }),
     [completeSubmitLoginForm]: (state, payload) => update(state, {

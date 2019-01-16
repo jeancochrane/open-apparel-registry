@@ -1,4 +1,7 @@
 /* eslint-env jest */
+
+const mapValues = require('lodash/mapValues');
+
 const {
     makeGetListsURL,
     makeUpdateListURL,
@@ -12,7 +15,14 @@ const {
     makeSearchFacilityByNameAndCountryURL,
     getValueFromEvent,
     getCheckedFromEvent,
+    createSignupErrorMessages,
+    createSignupRequestData,
 } = require('../util/util');
+
+const {
+    registrationFieldsEnum,
+    registrationFormFields,
+} = require('../util/constants');
 
 const REACT_APP_API_KEY = 'REACT_APP_API_KEY';
 
@@ -118,4 +128,36 @@ it('gets the checked state from an even on a DOM checkbox input', () => {
     };
 
     expect(getCheckedFromEvent(mockEvent)).toEqual(true);
+});
+
+
+it('creates a list of error messages if any required signup fields are missing', () => {
+    const incompleteForm = mapValues(registrationFieldsEnum, '');
+
+    const expectedErrorMessageCount = registrationFormFields
+        .filter(({ required }) => required)
+        .length;
+
+    expect(createSignupErrorMessages(incompleteForm).length)
+        .toEqual(expectedErrorMessageCount);
+});
+
+it('creates zero error messages if all required signup fields are present', () => {
+    const completeForm = registrationFieldsEnum;
+
+    expect(createSignupErrorMessages(completeForm).length)
+        .toEqual(0);
+});
+
+it('correctly reformats data to send to Django from the signup form state', () => {
+    // drop `confirmPassword` since it's sent as `password` to Django
+    const {
+        confirmPassword,
+        ...completeForm
+    } = registrationFieldsEnum;
+
+    const requestData = createSignupRequestData(completeForm);
+
+    registrationFormFields.forEach(({ id, modelFieldName }) =>
+        expect(requestData[modelFieldName]).toEqual(completeForm[id]));
 });

@@ -33,6 +33,8 @@ urlpatterns = [
         name='login_to_oar_client'),
     url(r'^user-logout/', views.LogoutOfOARClient.as_view(),
         name='logout_of_oar_client'),
+    url(r'^user-signup/', views.SubmitNewUserForm.as_view(),
+        name='submit_new_user_form'),
     # TODO: Remove the following URLs once the Django versions have been
     # implemented. These are here as imitations of the URLs available via
     # the legacy Restify API:

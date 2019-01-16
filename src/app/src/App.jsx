@@ -21,7 +21,7 @@ import Maintenance from './containers/Maintenance';
 import 'react-toastify/dist/ReactToastify.css'; // eslint-disable-line import/first
 import './App.css';
 
-import { sessionLogin } from './actions/auth.js';
+import { sessionLogin } from './actions/auth';
 
 import { userPropType } from './util/propTypes';
 

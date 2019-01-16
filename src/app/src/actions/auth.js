@@ -6,7 +6,12 @@ import {
     logErrorAndDispatchFailure,
     makeUserLoginURL,
     makeUserLogoutURL,
+    makeUserSignupURL,
+    createSignupErrorMessages,
+    createSignupRequestData,
 } from '../util/util';
+
+import { registrationFieldsEnum } from '../util/constants';
 
 export const startSubmitSignUpForm = createAction('START_SUBMIT_SIGN_UP_FORM');
 export const failSubmitSignUpForm = createAction('FAIL_SUBMIT_SIGN_UP_FORM');
@@ -42,12 +47,37 @@ export const resetAuthFormState = createAction('RESET_AUTH_FORM_STATE');
 export const resetAuthState = createAction('RESET_AUTH_STATE');
 
 export function submitSignUpForm() {
-    return (dispatch) => {
+    return (dispatch, getState) => {
         dispatch(startSubmitSignUpForm());
 
-        return Promise
-            .resolve(true)
-            .then(() => dispatch(completeSubmitSignUpForm()))
+        const {
+            auth: {
+                signup: {
+                    form,
+                },
+            },
+        } = getState();
+
+        const missingRequiredFieldErrorMessages = createSignupErrorMessages(form);
+
+        if (missingRequiredFieldErrorMessages.length) {
+            return dispatch(failSubmitSignUpForm(missingRequiredFieldErrorMessages));
+        }
+
+        if (form[registrationFieldsEnum.password] !==
+            form[registrationFieldsEnum.confirmPassword]) {
+            return dispatch(failSubmitSignUpForm([
+                'Password and confirmation password don\'t match',
+            ]));
+        }
+
+        // Drop confirmPassword from request sent to Django, since it's sent as password
+        const { confirmPassword, ...dataForAPI } = form;
+        const signupData = createSignupRequestData(dataForAPI);
+
+        return csrfRequest
+            .post(makeUserSignupURL(), signupData)
+            .then(({ data }) => dispatch(completeSubmitSignUpForm(data)))
             .catch(e => dispatch(logErrorAndDispatchFailure(
                 e,
                 'An error prevented signing up',

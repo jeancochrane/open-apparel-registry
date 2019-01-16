@@ -1,5 +1,5 @@
 import React from 'react';
-import { arrayOf, bool, func, oneOf, string } from 'prop-types';
+import { arrayOf, bool, func, oneOf, oneOfType, string } from 'prop-types';
 
 import ControlledTextInput from '../components/inputs/ControlledTextInput';
 import ControlledSelectInput from '../components/inputs/ControlledSelectInput';
@@ -25,19 +25,10 @@ export default function RegisterFormField({
         return null;
     }
 
-    if (type === inputTypesEnum.select) {
-        return (
-            <div className="form__field">
-                <p className="form__label">
-                    {label}
-                </p>
-                <ControlledSelectInput
-                    handleChange={handleChange}
-                    options={options}
-                    value={value}
-                />
-            </div>
-        );
+    // For now the TOS & Newsletter checkboxes are created
+    // inline in the RegisterForm component
+    if (type === inputTypesEnum.checkbox) {
+        return null;
     }
 
     const requiredIndicator = required
@@ -46,6 +37,25 @@ export default function RegisterFormField({
                 {' *'}
             </span>)
         : null;
+
+    if (type === inputTypesEnum.select) {
+        return (
+            <div className="form__field">
+                <label
+                    htmlFor={id}
+                    className="form__label"
+                >
+                    {label}
+                    {requiredIndicator}
+                </label>
+                <ControlledSelectInput
+                    handleChange={handleChange}
+                    options={options}
+                    value={value}
+                />
+            </div>
+        );
+    }
 
     return (
         <div className="form__field">
@@ -61,6 +71,7 @@ export default function RegisterFormField({
                 onChange={handleChange}
                 id={id}
                 hint={hint}
+                type={type}
             />
         </div>
     );
@@ -80,7 +91,7 @@ RegisterFormField.propTypes = {
     options: arrayOf(oneOf(contributorTypeOptions)),
     required: bool,
     hint: string,
-    value: string,
+    value: oneOfType([bool, string]),
     handleChange: func.isRequired,
     isHidden: bool.isRequired,
 };
