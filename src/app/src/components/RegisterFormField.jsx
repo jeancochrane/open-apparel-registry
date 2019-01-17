@@ -1,8 +1,9 @@
 import React from 'react';
 import { arrayOf, bool, func, oneOf, oneOfType, string } from 'prop-types';
 
-import ControlledTextInput from '../components/inputs/ControlledTextInput';
-import ControlledSelectInput from '../components/inputs/ControlledSelectInput';
+import ControlledTextInput from './inputs/ControlledTextInput';
+import ControlledSelectInput from './inputs/ControlledSelectInput';
+import ControlledCheckboxInput from './inputs/ControlledCheckboxInput';
 
 import {
     inputTypesEnum,
@@ -13,6 +14,7 @@ import {
 export default function RegisterFormField({
     id,
     label,
+    link,
     type,
     options,
     required,
@@ -22,12 +24,6 @@ export default function RegisterFormField({
     isHidden,
 }) {
     if (isHidden) {
-        return null;
-    }
-
-    // For now the TOS & Newsletter checkboxes are created
-    // inline in the RegisterForm component
-    if (type === inputTypesEnum.checkbox) {
         return null;
     }
 
@@ -52,6 +48,21 @@ export default function RegisterFormField({
                     handleChange={handleChange}
                     options={options}
                     value={value}
+                />
+            </div>
+        );
+    }
+
+    if (type === inputTypesEnum.checkbox) {
+        return (
+            <div className="form__field">
+                <ControlledCheckboxInput
+                    key={id}
+                    id={id}
+                    onChange={handleChange}
+                    checked={value}
+                    text={label}
+                    link={link}
                 />
             </div>
         );

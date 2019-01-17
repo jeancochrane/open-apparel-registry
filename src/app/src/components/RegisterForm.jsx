@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 
 import AppGrid from '../containers/AppGrid';
-import Checkbox from './inputs/Checkbox';
 import ShowOnly from './ShowOnly';
 import Button from './Button';
 import RegisterFormField from './RegisterFormField';
@@ -95,6 +94,7 @@ class RegisterForm extends Component {
                     id={field.id}
                     label={field.label}
                     type={field.type}
+                    link={field.link}
                     hint={field.hint}
                     required={field.required}
                     options={field.options}
@@ -128,20 +128,6 @@ class RegisterForm extends Component {
                             database. Create an account to begin:
                         </p>
                         {formInputs}
-                        <div className="form__field">
-                            <Checkbox
-                                onChange={inputUpdates[registrationFieldsEnum.newsletter]}
-                                text="Sign up for OAR newsletter"
-                            />
-                            <Checkbox
-                                onChange={inputUpdates[registrationFieldsEnum.tos]}
-                                text="Agree to "
-                                link={{
-                                    text: 'Terms of Services',
-                                    url: 'https://info.openapparel.org/tos/',
-                                }}
-                            />
-                        </div>
                         <Button
                             text="Register"
                             onClick={submitForm}
