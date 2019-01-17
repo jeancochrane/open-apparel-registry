@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.core.exceptions import PermissionDenied
 from rest_framework.generics import CreateAPIView
 from rest_framework.decorators import api_view, permission_classes
@@ -5,12 +6,30 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_auth.views import LoginView, LogoutView
 
+from api.models import Organization, User
 from api.serializers import UserSerializer
 
 
 @permission_classes((AllowAny,))
 class SubmitNewUserForm(CreateAPIView):
     serializer_class = UserSerializer
+
+    @transaction.atomic
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            pk = serializer.data['id']
+            user = User.objects.get(pk=pk)
+
+            Organization.objects.create(
+                admin=user,
+                name=user.email,
+                org_type=user.contributor_type,
+            )
+
+            return Response(UserSerializer(user).data)
 
 
 class LoginToOARClient(LoginView):
