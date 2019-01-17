@@ -54,6 +54,7 @@ export default class ControlledSelectInput extends Component {
                             onClick={this.toggleSelect}
                             onKeyPress={this.toggleSelect}
                             className="form__select-input-container"
+                            tabIndex={0}
                         >
                             {value || 'Please Select'}
                         </p>
@@ -65,6 +66,7 @@ export default class ControlledSelectInput extends Component {
                                     onClick={() => this.makeSelection(opt)}
                                     onKeyPress={() => this.makeSelection(opt)}
                                     className="form__select-input--selected"
+                                    tabIndex={0}
                                 >
                                     {opt}
                                 </div>
