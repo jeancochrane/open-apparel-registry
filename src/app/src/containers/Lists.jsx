@@ -25,7 +25,6 @@ import PropTypes from 'prop-types';
 import { parse } from 'json2csv';
 import ShowOnly from '../components/ShowOnly';
 import TablePaginationWrapper from '../components/TablePaginationWrapper';
-import * as userActions from '../actions/user';
 import * as listsActions from '../actions/lists';
 import AppGrid from './AppGrid';
 import { DownloadCSV } from '../util/util';
@@ -56,7 +55,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    actions: bindActionCreators({ ...userActions, ...listsActions }, dispatch),
+    actions: bindActionCreators({ ...listsActions }, dispatch),
 });
 
 class Lists extends Component {

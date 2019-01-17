@@ -36,13 +36,6 @@ class App extends Component {
         return this.props.logIn();
     }
 
-    // shouldComponentUpdate(nextProps) {
-    //     return (
-    //         nextProps.user.loaded !== this.props.user.loaded ||
-    //         nextProps.user.betaAccess !== this.props.user.betaAccess
-    //     );
-    // }
-
     render() {
         const { user } = this.props;
         const isMaintenance = process.env.REACT_APP_MAINTENANCE;
