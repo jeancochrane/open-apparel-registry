@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
 
-import ControlledTextInput from './inputs/ControlledTextInput';
+import ControlledTextInput from './ControlledTextInput';
 import AppGrid from '../containers/AppGrid';
 import Button from './Button';
 import ShowOnly from './ShowOnly';

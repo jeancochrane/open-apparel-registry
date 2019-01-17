@@ -1,9 +1,9 @@
 import React from 'react';
 import { arrayOf, bool, func, oneOf, oneOfType, string } from 'prop-types';
 
-import ControlledTextInput from './inputs/ControlledTextInput';
-import ControlledSelectInput from './inputs/ControlledSelectInput';
-import ControlledCheckboxInput from './inputs/ControlledCheckboxInput';
+import ControlledTextInput from './ControlledTextInput';
+import ControlledSelectInput from './ControlledSelectInput';
+import ControlledCheckboxInput from './ControlledCheckboxInput';
 
 import {
     inputTypesEnum,

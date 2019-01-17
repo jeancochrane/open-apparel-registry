@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { arrayOf, bool, func, string } from 'prop-types';
-import ShowOnly from '../ShowOnly';
+import ShowOnly from './ShowOnly';
 
 const styles = {
     dropdown: {
