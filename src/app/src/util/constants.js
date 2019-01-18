@@ -1,5 +1,7 @@
 export const OTHER = 'Other';
 
+// This choices must be kept in sync with the identical list
+// kept in the Django API's models.py file
 export const contributorTypeOptions = Object.freeze([
     'Auditor',
     'Brand/Retailer',
