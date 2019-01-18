@@ -47,7 +47,7 @@ export default class ControlledSelectInput extends Component {
         /* eslint-disable  jsx-a11y/no-noninteractive-tabindex */
         return (
             <span>
-                <ShowOnly showChildren={!disabled}>
+                <ShowOnly when={!disabled}>
                     <div style={{ position: 'relative' }}>
                         <p
                             role="presentation"
@@ -58,7 +58,7 @@ export default class ControlledSelectInput extends Component {
                         >
                             {value || 'Please Select'}
                         </p>
-                        <ShowOnly showChildren={open} style={styles.dropdown}>
+                        <ShowOnly when={open} style={styles.dropdown}>
                             {options.map(opt => (
                                 <div
                                     role="presentation"

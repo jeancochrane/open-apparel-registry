@@ -63,30 +63,6 @@ class RegisterForm extends Component {
             return null;
         }
 
-        const errorMessages = error && error.length
-            ? (
-                <ShowOnly
-                    showChildren
-                    style={{
-                        display: 'block',
-                        fontSize: '12px',
-                        margin: '8px 0 0 0',
-                        color: '#FF2D55',
-                        width: '100%',
-                    }}
-                >
-                    <ul>
-                        {
-                            error.map(err => (
-                                <li key={err}>
-                                    {err}
-                                </li>
-                            ))
-                        }
-                    </ul>
-                </ShowOnly>)
-            : null;
-
         const formInputs = registrationFormFields
             .map(field => (
                 <RegisterFormField
@@ -119,7 +95,6 @@ class RegisterForm extends Component {
                     </Link>
                     .
                 </p>
-                {errorMessages}
                 <Grid container className="margin-bottom-100">
                     <Grid item xs={12} sm={8}>
                         <p>
@@ -128,6 +103,28 @@ class RegisterForm extends Component {
                             database. Create an account to begin:
                         </p>
                         {formInputs}
+                        <ShowOnly
+                            when={error && error.length}
+                            style={{
+                                display: 'block',
+                                fontSize: '12px',
+                                margin: '8px 0 0 0',
+                                color: '#FF2D55',
+                                width: '100%',
+                            }}
+                        >
+                            <ul>
+                                {
+                                    error && error.length
+                                        ? error.map(err => (
+                                            <li key={err}>
+                                                {err}
+                                            </li>
+                                        ))
+                                        :null
+                                }
+                            </ul>
+                        </ShowOnly>
                         <Button
                             text="Register"
                             onClick={submitForm}

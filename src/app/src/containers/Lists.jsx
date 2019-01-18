@@ -214,15 +214,15 @@ class Lists extends Component {
             ? `${processdate.getUTCHours()} hours, ${processdate.getUTCMinutes()} minutes and ${processdate.getUTCSeconds()} second(s)`
             : '';
         return (
-            <ShowOnly showChildren={user.loaded}>
+            <ShowOnly when={user.loaded}>
                 <AppGrid title="My Lists">
                     <Grid container className="margin-bottom-16">
                         <Grid item xs={12}>
-                            <ShowOnly showChildren={isSpinning}>
+                            <ShowOnly when={isSpinning}>
                                 <CircularProgress size={50} />
                             </ShowOnly>
-                            <ShowOnly showChildren={!isSpinning}>
-                                <ShowOnly showChildren={Object.keys(lists).length === 0}>
+                            <ShowOnly when={!isSpinning}>
+                                <ShowOnly when={Object.keys(lists).length === 0}>
                                     <p>
                                         You currently have no lists to view.
                                         Please contribute a list of factories to
@@ -238,7 +238,7 @@ class Lists extends Component {
                                         </Link>
                                     </div>
                                 </ShowOnly>
-                                <ShowOnly showChildren={Object.keys(lists).length > 0}>
+                                <ShowOnly when={Object.keys(lists).length > 0}>
                                     <p>
                                         Review your uploaded list below,
                                         including exact matches and partial
@@ -292,7 +292,7 @@ class Lists extends Component {
                         </Grid>
                     </Grid>
                     <Grid container className="margin-bottom-64">
-                        <ShowOnly showChildren={data.length > 0}>
+                        <ShowOnly when={data.length > 0}>
                             <ShowOnly
                                 showChildren={
                                     processdate &&

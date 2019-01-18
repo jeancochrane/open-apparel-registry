@@ -58,29 +58,6 @@ class LoginForm extends Component {
             return null;
         }
 
-        const errorMessages = error && error.length
-            ? (
-                <ShowOnly
-                    showChildren
-                    style={{
-                        color: 'red',
-                        display: 'block',
-                        marginBottom: '5px',
-                        width: '100%',
-                    }}
-                >
-                    <ul>
-                        {
-                            error.map(err => (
-                                <li key={err}>
-                                    {err}
-                                </li>
-                            ))
-                        }
-                    </ul>
-                </ShowOnly>)
-            : null;
-
         return (
             <AppGrid title="Log In">
                 <Grid item xs={12} sm={7}>
@@ -98,7 +75,6 @@ class LoginForm extends Component {
                         </Link>
                         .
                     </p>
-                    {errorMessages}
                     <div className="form__field">
                         <label
                             className="form__label"
@@ -128,6 +104,26 @@ class LoginForm extends Component {
                         />
                     </div>
                     <SendResetPasswordEmailForm />
+                    <ShowOnly
+                        when={error && error.length}
+                        style={{
+                            color: 'red',
+                            display: 'block',
+                            marginBottom: '5px',
+                            width: '100%',
+                        }}
+                    >
+                        <ul>
+                            {
+                                error && error.length
+                                    ? error.map(err => (
+                                        <li key={err}>
+                                            {err}
+                                        </li>))
+                                    : null
+                            }
+                        </ul>
+                    </ShowOnly>
                     <Button
                         text="Log In"
                         onClick={submitForm}

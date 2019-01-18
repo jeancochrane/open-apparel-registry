@@ -171,7 +171,7 @@ class Profile extends Component {
                 }}
             >
                 <Grid item xs={12} sm={7}>
-                    <ShowOnly showChildren={isUser}>
+                    <ShowOnly when={isUser}>
                         <div className="control-panel__group">
                             <div className="form__field">
                                 <p className="form__label">Email Address</p>
@@ -217,7 +217,7 @@ class Profile extends Component {
                                 placeholder=""
                                 initialValue={contributorType}
                             />
-                            <ShowOnly showChildren={contributorType === 'Other'}>
+                            <ShowOnly when={contributorType === 'Other'}>
                                 <p className="form__label">
                                     Other Contributor Type
                                 </p>
@@ -320,7 +320,7 @@ class Profile extends Component {
                             />
                         </div>
                     </div>
-                    <ShowOnly showChildren={isUser}>
+                    <ShowOnly when={isUser}>
                         <ReactFilestack
                             apikey={process.env.REACT_APP_FILESTACK_KEY}
                             buttonText="Change Profile Photo"
