@@ -9,6 +9,9 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import RegisterForm from './components/RegisterForm';
 import LoginForm from './components/LoginForm';
+// TODO: Re-implement Profile view/edit functionality in
+// https://github.com/open-apparel-registry/open-apparel-registry/issues/104
+// (we keep the existing component around for reference)
 // import Profile from './containers/Profile';
 import UserProfile from './components/UserProfile';
 import Contribute from './containers/Contribute';
