@@ -117,7 +117,7 @@ class RegisterForm extends Component {
                                                 {err}
                                             </li>
                                         ))
-                                        :null
+                                        : null
                                 }
                             </ul>
                         </ShowOnly>
