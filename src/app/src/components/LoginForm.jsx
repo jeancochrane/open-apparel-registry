@@ -106,7 +106,7 @@ class LoginForm extends Component {
                         />
                     </div>
                     <SendResetPasswordEmailForm />
-                    <ShowOnly when={error && error.length}>
+                    <ShowOnly when={!!(error && error.length)}>
                         <ul style={formValidationErrorMessageStyle}>
                             {
                                 error && error.length

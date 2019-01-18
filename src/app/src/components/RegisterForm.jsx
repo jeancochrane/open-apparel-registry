@@ -108,7 +108,7 @@ class RegisterForm extends Component {
                             database. Create an account to begin:
                         </p>
                         {formInputs}
-                        <ShowOnly when={error && error.length}>
+                        <ShowOnly when={!!(error && error.length)}>
                             <ul style={formValidationErrorMessageStyle}>
                                 {
                                     error && error.length
