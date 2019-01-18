@@ -102,13 +102,12 @@ def make_user(pk, username=None, is_superuser=None, is_staff=None):
             'password': password,
             'last_login': updated_at,
             'is_superuser': make_bool(is_superuser),
-            'username': profile['username'],
-            'first_name': profile['name'].split(' ')[0],
-            'last_name': profile['name'].split(' ')[1],
+            'name': profile['name'],
             'email': profile['mail'],
             'is_staff': make_bool(is_staff),
             'is_active': True,
-            'date_joined': created_at,
+            'created_at': created_at,
+            'updated_at': updated_at,
         }
     }
 
