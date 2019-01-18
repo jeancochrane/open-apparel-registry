@@ -36,7 +36,7 @@ const mapStateToProps = state => ({
     user: state.user,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = () => ({
     actions: {},
 });
 

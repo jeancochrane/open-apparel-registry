@@ -20,18 +20,18 @@ export default function ControlledCheckboxInput({
     id,
 }) {
     const labelElement = link
-          ? (
-              <Fragment>
-                  {link.prefixText}
-                  <a
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="link-underline"
-                      href={link.url}
-                      >
-                      {text}
-                  </a>
-              </Fragment>)
+        ? (
+            <Fragment>
+                {link.prefixText}
+                <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="link-underline"
+                    href={link.url}
+                >
+                    {text}
+                </a>
+            </Fragment>)
         : text;
 
     return (
@@ -65,4 +65,5 @@ ControlledCheckboxInput.propTypes = {
         prefixText: string,
         url: string.isRequired,
     }),
-}
+    id: string.isRequired,
+};

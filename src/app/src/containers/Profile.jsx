@@ -1,3 +1,8 @@
+/* eslint-disable */
+/* This component's gradually going to be deprecated in favor of
+   UserProfile.jsx. We retain the file until it has been fully
+   replaced */
+
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';

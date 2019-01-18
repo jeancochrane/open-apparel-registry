@@ -1,5 +1,5 @@
 import React from 'react';
-import { arrayOf, bool, func, oneOf, oneOfType, string } from 'prop-types';
+import { arrayOf, bool, func, oneOf, oneOfType, shape, string } from 'prop-types';
 
 import ControlledTextInput from './ControlledTextInput';
 import ControlledSelectInput from './ControlledSelectInput';
@@ -93,6 +93,7 @@ RegisterFormField.defaultProps = {
     hint: null,
     value: '',
     options: null,
+    link: null,
 };
 
 RegisterFormField.propTypes = {
@@ -105,4 +106,8 @@ RegisterFormField.propTypes = {
     value: oneOfType([bool, string]),
     handleChange: func.isRequired,
     isHidden: bool.isRequired,
+    link: shape({
+        prefixText: string,
+        url: string.isRequired,
+    }),
 };

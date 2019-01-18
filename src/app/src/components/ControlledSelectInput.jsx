@@ -44,7 +44,7 @@ export default class ControlledSelectInput extends Component {
                 open,
             },
         } = this;
-
+        /* eslint-disable  jsx-a11y/no-noninteractive-tabindex */
         return (
             <span>
                 <ShowOnly showChildren={!disabled}>
@@ -76,6 +76,7 @@ export default class ControlledSelectInput extends Component {
                 </ShowOnly>
             </span>
         );
+        /* eslint-enable jsx-a11y/no-noninteractive-tabindex */
     }
 }
 
