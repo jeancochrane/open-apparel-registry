@@ -25,7 +25,7 @@ class SubmitNewUserForm(CreateAPIView):
 
             Organization.objects.create(
                 admin=user,
-                name=user.email,
+                name=user.name,
                 org_type=user.contributor_type,
             )
 
