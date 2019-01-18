@@ -86,15 +86,13 @@ def make_org_type():
     return Organization.ORG_TYPE_CHOICES[random_index][0]
 
 
-def make_user(pk, username=None, is_superuser=None, is_staff=None):
+def make_user(pk, email=None, is_superuser=None, is_staff=None):
     password = ('pbkdf2_sha256$100000$AhShrfanKLuW$EQ7qM7QxlaMPBperDoFgESqm4h'
                 'Q5EdwigJ9ks5HWD3o=')
     (created_at, updated_at) = make_created_updated()
     profile = fake.profile()
-    if username is not None:
-        profile['username'] = username
-    else:
-        profile['username'] = profile['mail'].split('@')[0]
+    if email is not None:
+        profile['mail'] = email
     return {
         'model': 'api.user',
         'pk': pk,
@@ -113,7 +111,7 @@ def make_user(pk, username=None, is_superuser=None, is_staff=None):
 
 
 def make_users(count=100):
-    admins = [make_user(1, username='admin', is_superuser=True, is_staff=True)]
+    admins = [make_user(1, email='admin@openapparel.org', is_superuser=True, is_staff=True)]
     users = [make_user(pk, is_superuser=False) for pk in range(2, count+1)]
     return admins + users
 
