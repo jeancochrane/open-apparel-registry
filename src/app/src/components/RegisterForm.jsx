@@ -33,6 +33,8 @@ import {
     getCheckedFromEvent,
 } from '../util/util';
 
+import { formValidationErrorMessageStyle } from '../util/styles';
+
 class RegisterForm extends Component {
     componentDidUpdate() {
         const {
@@ -103,17 +105,8 @@ class RegisterForm extends Component {
                             database. Create an account to begin:
                         </p>
                         {formInputs}
-                        <ShowOnly
-                            when={error && error.length}
-                            style={{
-                                display: 'block',
-                                fontSize: '12px',
-                                margin: '8px 0 0 0',
-                                color: '#FF2D55',
-                                width: '100%',
-                            }}
-                        >
-                            <ul>
+                        <ShowOnly when={error && error.length}>
+                            <ul style={formValidationErrorMessageStyle}>
                                 {
                                     error && error.length
                                         ? error.map(err => (

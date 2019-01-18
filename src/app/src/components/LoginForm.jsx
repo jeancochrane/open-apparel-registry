@@ -23,6 +23,8 @@ import { userPropType } from '../util/propTypes';
 
 import { authRegisterFormRoute } from '../util/constants';
 
+import { formValidationErrorMessageStyle } from '../util/styles';
+
 const LOGIN_EMAIL = 'LOGIN_EMAIL';
 const LOGIN_PASSWORD = 'LOGIN_PASSWORD';
 
@@ -104,16 +106,8 @@ class LoginForm extends Component {
                         />
                     </div>
                     <SendResetPasswordEmailForm />
-                    <ShowOnly
-                        when={error && error.length}
-                        style={{
-                            color: 'red',
-                            display: 'block',
-                            marginBottom: '5px',
-                            width: '100%',
-                        }}
-                    >
-                        <ul>
+                    <ShowOnly when={error && error.length}>
+                        <ul style={formValidationErrorMessageStyle}>
                             {
                                 error && error.length
                                     ? error.map(err => (
