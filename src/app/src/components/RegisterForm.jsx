@@ -3,6 +3,8 @@ import { arrayOf, bool, func, shape, string } from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
+import identity from 'lodash/identity';
+import memoize from 'lodash/memoize';
 
 import AppGrid from '../containers/AppGrid';
 import ShowOnly from './ShowOnly';
@@ -17,6 +19,7 @@ import {
 
 import {
     OTHER,
+    inputTypesEnum,
     registrationFieldsEnum,
     registrationFormFields,
     authLoginFormRoute,
@@ -173,63 +176,36 @@ function mapStateToProps({
     };
 }
 
-function mapDispatchToProps(dispatch) {
+const getStateFromEventForEventType = Object.freeze({
+    [inputTypesEnum.checkbox]: getCheckedFromEvent,
+    [inputTypesEnum.select]: identity,
+    [inputTypesEnum.text]: getValueFromEvent,
+    [inputTypesEnum.password]: getValueFromEvent,
+});
+
+const mapDispatchToProps = memoize((dispatch) => {
+    const makeInputChangeHandler = (field, getStateFromEvent) => e =>
+        dispatch(updateSignUpFormInput({
+            value: getStateFromEvent(e),
+            field,
+        }));
+
+    const inputUpdates = Object
+        .values(registrationFieldsEnum)
+        .reduce((acc, field) => {
+            const { type } = registrationFormFields.find(({ id }) => id === field);
+            const getStateFromEvent = getStateFromEventForEventType[type];
+
+            return Object.assign({}, acc, {
+                [field]: makeInputChangeHandler(field, getStateFromEvent),
+            });
+        }, {});
+
     return {
-        inputUpdates: {
-            [registrationFieldsEnum.email]: e =>
-                dispatch(updateSignUpFormInput({
-                    value: getValueFromEvent(e),
-                    field: registrationFieldsEnum.email,
-                })),
-            [registrationFieldsEnum.name]: e =>
-                dispatch(updateSignUpFormInput({
-                    value: getValueFromEvent(e),
-                    field: registrationFieldsEnum.name,
-                })),
-            [registrationFieldsEnum.description]: e =>
-                dispatch(updateSignUpFormInput({
-                    value: getValueFromEvent(e),
-                    field: registrationFieldsEnum.description,
-                })),
-            [registrationFieldsEnum.website]: e =>
-                dispatch(updateSignUpFormInput({
-                    value: getValueFromEvent(e),
-                    field: registrationFieldsEnum.website,
-                })),
-            [registrationFieldsEnum.contributorType]: value =>
-                dispatch(updateSignUpFormInput({
-                    value,
-                    field: registrationFieldsEnum.contributorType,
-                })),
-            [registrationFieldsEnum.otherContributorType]: e =>
-                dispatch(updateSignUpFormInput({
-                    value: getValueFromEvent(e),
-                    field: registrationFieldsEnum.otherContributorType,
-                })),
-            [registrationFieldsEnum.password]: e =>
-                dispatch(updateSignUpFormInput({
-                    value: getValueFromEvent(e),
-                    field: registrationFieldsEnum.password,
-                })),
-            [registrationFieldsEnum.confirmPassword]: e =>
-                dispatch(updateSignUpFormInput({
-                    value: getValueFromEvent(e),
-                    field: registrationFieldsEnum.confirmPassword,
-                })),
-            [registrationFieldsEnum.tos]: e =>
-                dispatch(updateSignUpFormInput({
-                    value: getCheckedFromEvent(e),
-                    field: registrationFieldsEnum.tos,
-                })),
-            [registrationFieldsEnum.newsletter]: e =>
-                dispatch(updateSignUpFormInput({
-                    value: getCheckedFromEvent(e),
-                    field: registrationFieldsEnum.newsletter,
-                })),
-        },
+        inputUpdates,
         submitForm: () => dispatch(submitSignUpForm()),
         clearForm: () => dispatch(resetAuthFormState()),
     };
-}
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(RegisterForm);
