@@ -1,5 +1,7 @@
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
+import isObject from 'lodash/isObject';
+import flatten from 'lodash/flatten';
 
 import { registrationFormFields } from './constants';
 
@@ -51,6 +53,16 @@ export const makeSearchFacilityByNameAndCountryURL = (name, country, contributor
         : baseURL;
 };
 
+export const createErrorListFromResponseObject = data => flatten(Object
+    .entries(data)
+    .map(([field, errors]) => {
+        if (isArray(errors)) {
+            return errors.map(err => `${field}: ${err}`);
+        }
+
+        return [];
+    }));
+
 export function logErrorAndDispatchFailure(error, defaultMessage, failureAction) {
     return (dispatch) => {
         const response = get(error, 'response', { data: null, status: null });
@@ -77,6 +89,10 @@ export function logErrorAndDispatchFailure(error, defaultMessage, failureAction)
 
             if (isArray(response.data)) {
                 return response.data;
+            }
+
+            if (isObject(response.data)) {
+                return createErrorListFromResponseObject(response.data);
             }
 
             return [defaultMessage];

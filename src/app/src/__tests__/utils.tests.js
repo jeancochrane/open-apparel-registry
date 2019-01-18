@@ -17,6 +17,7 @@ const {
     getCheckedFromEvent,
     createSignupErrorMessages,
     createSignupRequestData,
+    createErrorListFromResponseObject,
 } = require('../util/util');
 
 const {
@@ -160,4 +161,26 @@ it('correctly reformats data to send to Django from the signup form state', () =
 
     registrationFormFields.forEach(({ id, modelFieldName }) =>
         expect(requestData[modelFieldName]).toEqual(completeForm[id]));
+});
+
+it('creates a list of field errors from an Django error object', () => {
+    const djangoErrors = {
+        email: [
+            'this email is already used',
+        ],
+        name: [
+            'this name has too few characters',
+            'this name has too few vowels',
+        ],
+    };
+
+    const expectedErrorMessages = [
+        'email: this email is already used',
+        'name: this name has too few characters',
+        'name: this name has too few vowels',
+    ];
+
+    const errorMessages = createErrorListFromResponseObject(djangoErrors);
+
+    expect(errorMessages).toEqual(expectedErrorMessages);
 });
