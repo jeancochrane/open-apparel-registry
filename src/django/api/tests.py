@@ -490,6 +490,7 @@ class FacilityListItemMatchingTest(TestCase):
         list_1 = FacilityList(header='', organization=org)
         list_1.save()
         item_1 = FacilityListItem(raw_data='',
+                                  row_index=0,
                                   address='1234 Main St', country_code='US',
                                   name='Shirts!', geocoded_point=Point(0, 0),
                                   status=FacilityListItem.GEOCODED,
@@ -500,6 +501,7 @@ class FacilityListItemMatchingTest(TestCase):
         facility_1.save()
         match_1.save()
         item_2 = FacilityListItem(address='1234 Main St', country_code='US',
+                                  row_index=0,
                                   name='Shirts!', geocoded_point=Point(0, 0),
                                   status=FacilityListItem.GEOCODED,
                                   geocoded_address='1234 Main St, Anytown USA')
