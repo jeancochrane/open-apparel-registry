@@ -1,7 +1,7 @@
 import os
 
 from django.core.management.base import BaseCommand, CommandError
-from django.db import transaction
+from django.db import transaction, DatabaseError
 
 from api.constants import ProcessingAction
 from api.models import FacilityList, FacilityListItem
@@ -55,31 +55,45 @@ class Command(BaseCommand):
                 items = FacilityListItem.objects.filter(
                     facility_list=facility_list)
 
-            with transaction.atomic():
-                result = {
-                    'success': 0,
-                    'failure': 0,
-                }
+            result = {
+                'success': 0,
+                'failure': 0,
+            }
 
-                for item in items:
-                    process(item)
+            # Process all items, save affected items, facilities, matches,
+            # and tally successes and failures
+            for item in items:
+                try:
+                    if action == ProcessingAction.MATCH:
+                        facility, match = process(item)
+                        with transaction.atomic():
+                            item.save()
+                            facility.save()
+                            match.save()
+                    else:
+                        process(item)
+                        item.save()
+
                     if item.status == FacilityListItem.ERROR:
                         result['failure'] += 1
                     else:
                         result['success'] += 1
-                    item.save()
+                except DatabaseError:
+                    result['failure'] += 1
 
-                if result['success'] > 0:
-                    self.stdout.write(
-                        self.style.SUCCESS(
-                            '{}: {} successes'.format(
-                                action, result['success'])))
+            # Print successes
+            if result['success'] > 0:
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        '{}: {} successes'.format(
+                            action, result['success'])))
 
-                if result['failure'] > 0:
-                    self.stdout.write(
-                        self.style.ERROR(
-                            '{}: {} failures'.format(
-                                action, result['failure'])))
+            # Print failures
+            if result['failure'] > 0:
+                self.stdout.write(
+                    self.style.ERROR(
+                        '{}: {} failures'.format(
+                            action, result['failure'])))
 
         except FacilityList.DoesNotExist:
             self.stderr.write('Validation Error: '
