@@ -4,8 +4,12 @@ RUN mkdir -p /usr/local/src
 WORKDIR /usr/local/src
 
 COPY requirements.txt /usr/local/src/
-RUN pip install --no-cache-dir -r requirements.txt
-
+RUN set -ex \
+    && deps="git" \
+    && apt-get update \
+    && apt-get install -y $deps --no-install-recommends \
+    && pip install --no-cache-dir -r /usr/local/src/requirements.txt \
+    && rm -rf /usr/local/src/requirements.txt /var/lib/apt/lists/*
 COPY . /usr/local/src
 
 RUN GOOGLE_GEOCODING_API_KEY="" \
